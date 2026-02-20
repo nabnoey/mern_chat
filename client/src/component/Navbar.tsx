@@ -1,7 +1,9 @@
 import { MessageSquare } from "lucide-react";
-
+import useAuthStore from "../store/useAuthStore";
 function Navbar() {
+  const {logOut,authUser} = useAuthStore()
   return (
+    // <div className="">
     <div className="navbar bg-bule-500 shadow-sm px-4">
       
       {/* left */}
@@ -28,8 +30,8 @@ function Navbar() {
           </li>
         </ul>
       </div>
+      </div>
 
-    </div>
   );
 }
 

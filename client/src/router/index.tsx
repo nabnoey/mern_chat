@@ -4,10 +4,17 @@ import MainLayout from "../layout/MainLayout";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import Contact from "../pages/Contact";
+import Theme from "../pages/Theme"
+import Profile from "../pages/Profile";
+import Chat from "../pages/Chat"
 
-const router = createBrowserRouter  (
+const router = createBrowserRouter
+
+
+  (
     [
-        {
+       {
+         
         path:"/",
         element:<MainLayout/>,
         children:[
@@ -18,8 +25,8 @@ const router = createBrowserRouter  (
         // },
 
         {
-            path:"/",
-            element:<Register />
+            path:"/register",
+            element:< Register />
         },
 
         {
@@ -30,8 +37,24 @@ const router = createBrowserRouter  (
         {
             path:"/contact",
             element:<Contact />
+        },
+        {
+            path:"/theme",
+            element:<Theme />
+        },
+        {
+            path:"/profile",
+            element:<Profile />
+        },
+
+        {
+            path:"",
+            element:<Chat />
         }
-    ]}
+    ]
+    }
+        
+       
     ]
 )
 

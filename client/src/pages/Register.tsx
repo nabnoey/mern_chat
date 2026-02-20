@@ -1,13 +1,37 @@
-import React, { useState } from "react";
-import { MessageSquare } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useState } from "react";
+import { Loader2, MessageSquare } from "lucide-react";
+// import { useNavigate } from "react-router"
+import toast from "react-hot-toast";
+import useAuthStore from "../store/useAuthStore";
 
 function Register() {
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+
+  const {signUp,isSignUp} = useAuthStore()
+
+  const validateForm = () => {
+    if (!fullName.trim()) return toast.error("Full name is required!");
+    if (!email.trim()) return toast.error("Email is required!");
+    if (!/\S+@\S+\.\S+/.test(email))
+      return toast.error("Invalid email format");
+    if (!password.trim()) return toast.error("Password is required!");
+    if (password.length < 6)
+      return toast.error("Password must be at least 6 characters");
+
+    return true;
+  };
+
+ const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = validateForm();
+    if (success === true) {
+      await signUp({ fullName, email, password });
+    }
+  };
   return (
     <div className="min-h-screen flex bg-gradient-to-r from-slate-900 to-slate-800 text-white">
 
@@ -20,12 +44,12 @@ function Register() {
             <div className="bg-orange-500 p-3 rounded-xl mb-3">
               <MessageSquare size={28} />
             </div>
-            <h1 className="text-2xl font-bold">Create Account</h1>
-            <p className="text-gray-400 text-sm">
+  
+
+            <p className="text-gray-400 text-sm mt-2">
               Get started with your free account
             </p>
           </div>
-
           {/* form */}
           <div className="space-y-4">
 
@@ -66,8 +90,19 @@ function Register() {
             </div>
 
             {/* button */}
-            <button className="btn w-full bg-orange-500 hover:bg-orange-600 border-none text-white mt-2" onClick={()=> navigate("/login")}>
-              Create Account
+            <button className="btn w-full bg-orange-500 hover:bg-orange-600 border-none text-white mt-2"
+            disabled={isSignUp}
+            type="submit"
+            onClick={handleSubmit}>
+             
+               {isSignUp ? (
+                <>
+                  <Loader2 className="size-5 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                "Create Account"
+              )}
             </button>
 
             {/* signin */}
@@ -103,6 +138,7 @@ function Register() {
         </div>
       </div>
     </div>
+    
   );
 }
 

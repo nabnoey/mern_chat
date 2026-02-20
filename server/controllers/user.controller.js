@@ -96,9 +96,104 @@ const logOut = async (req, res) => {
     });
   }
 };
+const updateProfile = async (req, res) => {
+  try {
+    const fullName = req.body?.fullName;
+    const profilePic = req.body?.profilePic;
+    const userId = req.user._id;
+
+    if (fullName && profilePic) {
+      const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+      if (!uploadResponse) {
+        return res.status(500).json({
+          message: "Error while uploading profile picture",
+        });
+      }
+
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        {
+          fullName: fullName,
+          profilePic: uploadResponse.secure_url,
+        },
+        { new: true },
+      );
+
+      if (!updatedUser) {
+        return res.status(500).json({
+          message: "Error while updating user profile",
+        });
+      }
+
+      return res.json({
+        message: "User profile updated successfully",
+        user: updateUser,
+      });
+    } else if (fullName) {
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        { fullName: fullName },
+        { new: true },
+      );
+
+      if (!updatedUser) {
+        return res.status(500).json({
+          message: "Error while updating user profile",
+        });
+      }
+
+      return res.json({
+        message: "User profile updated successfully",
+        user: updateUser,
+        // user:updateUser
+      });
+    } else if (profilePic) {
+      const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+      if (!uploadResponse) {
+        return res.status(500).json({
+          message: "Error while uploading profile picture",
+        });
+      }
+
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        { profilePic: uploadResponse.secure_url },
+        { new: true },
+      );
+
+      if (!updatedUser) {
+        return res.status(500).json({
+          message: "Error while updating Picture profile",
+        });
+      }
+
+      return res.json({
+        message: "Picture profile updated successfully",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal Server Error while updating ProfilePicture",
+    });
+  }
+};
+
+const checkAuth = async (req, res) => {
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error while checking auth" });
+  }
+};
 
 module.exports = {
   signUp,
   login,
   logOut,
+  updateProfile,
+  checkAuth,
 };
